@@ -10,12 +10,7 @@ library(sf)
 library(shiny)
 library(tidyverse)
 
-# 2. Load data ------------------------------------------------------------
-
-## Download data of Cerambyx cerdo
-cerambyx <- read_rds("data/cerambyx.rds")
-
-# 3. App ------------------------------------------------------------------
+# 2. App ------------------------------------------------------------------
 
 ui <- page_sidebar(
     title   = "Cerambyx dashboard",
@@ -39,8 +34,13 @@ ui <- page_sidebar(
 
 server <- function(input, output) {
 
+    ## Download data of Cerambyx cerdo
+    cerambyx <- reactive({
+        read_rds("data/cerambyx.rds")
+    })
+
     filtered_cerambyx <- reactive({
-        cerambyx %>%
+        cerambyx() %>%
             filter(year == input$year)
     })
 
@@ -50,7 +50,25 @@ server <- function(input, output) {
     })
 
     output$table_cerambyx <- render_gt({
-        gt(cerambyx)
+        cerambyx() %>%
+            as_tibble() |>
+            select(-geometry) |>
+            gt() %>%
+            tab_header(
+                title = "Cerambyx cerdo",
+                subtitle = "Occurrence data"
+            ) %>%
+            fmt_number(
+                columns = c(year),
+                decimals = 0
+            ) %>%
+            fmt_markdown(
+                columns = c(verbatimLocality),
+                rows = 1:5
+            ) %>%
+            tab_options(
+                table.width = "100%"
+            )
     })
 }
 
