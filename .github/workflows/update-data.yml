@@ -1,10 +1,10 @@
-name: Upload data and deploy
+name: Download data from GBIF
 
 on:
   push:
     branches: main
   schedule:
-    - cron: "0 0 */2 * *"
+    - cron: '0 */6 * * *'
 
 jobs:
   update-data:
@@ -12,7 +12,6 @@ jobs:
     container:
       image: rocker/r2u:22.04
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: SessionInfo
@@ -22,9 +21,8 @@ jobs:
           apt-get update
           apt-get install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev
         shell: bash
-      - name: Install R packages
-        run: |
-          Rscript -e "install.packages(c('geodata', 'readr', 'dplyr', 'sf', 'jsonlite'))"
+      - uses: r-lib/actions/setup-renv@v2
+
       - name: Run R script
         run: |
           Rscript R/download_data.R
@@ -51,11 +49,10 @@ jobs:
         shell: Rscript {0}
       - name: Authorize and deploy app
         env:
-          APPNAME: ccerdo_app
+          APPNAME: gha_app
           ACCOUNT: ${{ secrets.RSCONNECT_USER }}
           SERVER: shinyapps.io
         run: |
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}", "${{ secrets.RSCONNECT_TOKEN }}", "${{ secrets.RSCONNECT_SECRET }}")
           rsconnect::deployApp(appName = "${{ env.APPNAME }}", account = "${{ env.ACCOUNT }}", server = "${{ env.SERVER }}")
         shell: Rscript {0}
-
