@@ -5,14 +5,14 @@ library(readr)
 library(sf)
 library(dplyr)
 
-## Search occurrences
+## Search occurrences in Portugal
 cerambyx_po <- geodata::sp_occurrence(
     genus   = "Cerambyx",
     species = "cerdo",
     args    = c("country=PT")
 )
 
-## Search occurences in Spain
+## Search occurrences in Spain
 cerambyx_esp <- geodata::sp_occurrence(
     genus   = "Cerambyx",
     species = "cerdo",
