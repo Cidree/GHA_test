@@ -5,7 +5,7 @@ library(readr)
 library(sf)
 library(dplyr)
 
-## Search occurrences 2 2 2 2 2
+## Search occurrences
 cerambyx_po <- geodata::sp_occurrence(
     genus   = "Cerambyx",
     species = "cerdo",
