@@ -12,6 +12,7 @@ cerambyx_po <- geodata::sp_occurrence(
     args    = c("country=PT")
 )
 
+## Search occurences in Spain
 cerambyx_esp <- geodata::sp_occurrence(
     genus   = "Cerambyx",
     species = "cerdo",
